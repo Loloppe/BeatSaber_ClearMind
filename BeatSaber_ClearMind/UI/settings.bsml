@@ -1,0 +1,4 @@
+<settings-container>
+	<checkbox-setting apply-on-change="true" value="Enabled" text="Hide Non-Interactive V3 Wall"/>
+	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Also Hide on Desktop View"/>
+</settings-container>
