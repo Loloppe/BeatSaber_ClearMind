@@ -12,7 +12,15 @@ namespace ClearMind
     {
         public static Config Instance;
         public virtual bool Enabled { get; set; } = false;
+        public virtual bool Transparent { get; set; } = false;
+        public virtual bool ForceTransparent { get; set; } = false;
         public virtual bool HideDesktopView { get; set; } = false;
+
+        public static bool IsEnabled()
+        {
+            if (Instance.Enabled && (Instance.Transparent || Instance.ForceTransparent || Instance.HideDesktopView)) return true;
+            return false;
+        }
 
         /// <summary>
 		/// This is called whenever BSIPA reads the config from disk (including when file changes are detected).

@@ -1,4 +1,8 @@
 <settings-container>
-	<checkbox-setting apply-on-change="true" value="Enabled" text="Hide Non-Interactive V3 Wall"/>
-	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Also Hide on Desktop View"/>
+	<horizontal>
+		<text text='X = Wall outside of the 4x3 grid' align='Center'/>
+	</horizontal>
+	<checkbox-setting apply-on-change="true" value="Transparent" text="Transparent X" align='Right'/>
+	<checkbox-setting apply-on-change="true" value="ForceTransparent" text="Hide X + Transparent Wall" align='Right'/>
+	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Hide X + Hide X on Desktop" align='Right'/>
 </settings-container>

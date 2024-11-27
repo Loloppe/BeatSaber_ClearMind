@@ -1,8 +1,8 @@
 ﻿
 using CameraUtils.Core;
 using HarmonyLib;
-using System;
 using System.Linq;
+using UnityEngine;
 
 namespace ClearMind.HarmonyPatches
 {
@@ -13,12 +13,13 @@ namespace ClearMind.HarmonyPatches
         {
             static void Postfix(StandardLevelDetailView __instance)
             {
-                if(Config.Instance.Enabled == true && __instance.beatmapKey != null && __instance._beatmapLevel != null)
+                if (__instance.beatmapKey != null && __instance._beatmapLevel != null)
                 {
                     var hasRequirement = SongCore.Collections.RetrieveDifficultyData(__instance._beatmapLevel, __instance.beatmapKey)?
                     .additionalDifficultyData?
                     ._requirements?.Any(x => x == "Noodle Extensions" || x == "Mapping Extensions") == true;
                     if (hasRequirement) Config.Instance.Enabled = false;
+                    else Config.Instance.Enabled = true;
                 }
             }
         }
@@ -26,18 +27,35 @@ namespace ClearMind.HarmonyPatches
         [HarmonyPatch(typeof(ObstacleController), nameof(ObstacleController.Init))]
         static class HideObstacle
         {
-            static void Prefix(ref ObstacleData obstacleData, ref StretchableObstacle ____stretchableObstacle)
+            static void Prefix(ref ObstacleController __instance, ref ObstacleData obstacleData)
             {
-                if (Config.Instance.Enabled)
+                if (Config.IsEnabled())
                 {
+                    // This game seems to recycle gameObject or something, so need to set back parameters just in case.
+                    VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.Obstacle);
+                    var renderer = __instance._stretchableObstacle.transform.Find("ObstacleCore").GetComponent<MeshRenderer>();
+                    if (Config.Instance.ForceTransparent) renderer.forceRenderingOff = true;
+                    else renderer.forceRenderingOff = false;
+
                     if ((obstacleData.lineIndex > 3 && obstacleData.width >= 0) || (obstacleData.lineIndex < 0 && obstacleData.width + obstacleData.lineIndex <= 0))
                     {
-                        if (Config.Instance.HideDesktopView) VisibilityUtils.SetLayerRecursively(____stretchableObstacle.gameObject, VisibilityLayer.Event);
-                        else VisibilityUtils.SetLayerRecursively(____stretchableObstacle.gameObject, VisibilityLayer.DesktopOnly);
+                        // Hide the obstacle core
+                        renderer.forceRenderingOff = true;
+                        if (!Config.Instance.Transparent)
+                        {
+                            if (!Config.Instance.HideDesktopView)
+                            {
+                                // The only issue with this is that the desktop view will see outside walls as invisible, and the rest as normal walls.
+                                VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.DesktopOnly);
+                            }
+                            else
+                            {
+                                VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.Event);
+                            }
+                        }
                     }
                 }
             }
         }
-
     }
 }
