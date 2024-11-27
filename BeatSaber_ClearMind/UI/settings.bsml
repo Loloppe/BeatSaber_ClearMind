@@ -1,8 +1,6 @@
 <settings-container>
-	<horizontal>
-		<text text='X = Wall outside of the 4x3 grid' align='Center'/>
-	</horizontal>
-	<checkbox-setting apply-on-change="true" value="Transparent" text="Transparent X" align='Right'/>
-	<checkbox-setting apply-on-change="true" value="ForceTransparent" text="Hide X + Transparent Wall" align='Right'/>
-	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Hide X + Hide X on Desktop" align='Right'/>
+	<checkbox-setting apply-on-change="true" value="OuterTransparent" text="Make non-gameplay wall transparent" align='Right'/>
+	<checkbox-setting apply-on-change="true" value="ForceTransparent" text="Make all wall transparent" align='Right'/>
+	<checkbox-setting apply-on-change="true" value="HideOutline" text="Hide non-gameplay wall outline in HMD only" align='Right'/>
+	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Hide non-gameplay wall outline in HMD and Desktop View" align='Right'/>
 </settings-container>

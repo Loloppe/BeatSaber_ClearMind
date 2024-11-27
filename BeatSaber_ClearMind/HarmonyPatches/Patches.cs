@@ -29,29 +29,32 @@ namespace ClearMind.HarmonyPatches
         {
             static void Prefix(ref ObstacleController __instance, ref ObstacleData obstacleData)
             {
-                if (Config.IsEnabled())
+                if (Config.Instance.Enabled)
                 {
-                    // This game seems to recycle gameObject or something, so need to set back parameters just in case.
+                    // This game seems to reuse object during gameplay, so need to set back parameters just in case.
                     VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.Obstacle);
                     var renderer = __instance._stretchableObstacle.transform.Find("ObstacleCore").GetComponent<MeshRenderer>();
-                    if (Config.Instance.ForceTransparent) renderer.forceRenderingOff = true;
-                    else renderer.forceRenderingOff = false;
+                    renderer.forceRenderingOff = false;
 
+                    // Option to make all walls transparent
+                    if (Config.Instance.ForceTransparent) renderer.forceRenderingOff = true;
+
+                    // Check to find non-gameplay wall.
                     if ((obstacleData.lineIndex > 3 && obstacleData.width >= 0) || (obstacleData.lineIndex < 0 && obstacleData.width + obstacleData.lineIndex <= 0))
                     {
-                        // Hide the obstacle core
-                        renderer.forceRenderingOff = true;
-                        if (!Config.Instance.Transparent)
+                        if (Config.Instance.OutsideTransparent)
                         {
-                            if (!Config.Instance.HideDesktopView)
-                            {
-                                // The only issue with this is that the desktop view will see outside walls as invisible, and the rest as normal walls.
-                                VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.DesktopOnly);
-                            }
-                            else
-                            {
-                                VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.Event);
-                            }
+                            renderer.forceRenderingOff = true;
+                        }
+                        // This part hide the outline of the wall
+                        if (Config.Instance.HideDesktopView)
+                        {
+                            VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.Event);
+                        }
+                        else if (Config.Instance.HideOutline)
+                        {
+                            // The only issue with this logic is that the desktop view might see distant wall as transparent, while the rest are default.
+                            VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.DesktopOnly);
                         }
                     }
                 }
