@@ -8,22 +8,6 @@ namespace ClearMind.HarmonyPatches
 {
     internal class Patches
     {
-        [HarmonyPatch(typeof(StandardLevelDetailView), nameof(StandardLevelDetailView.RefreshContent))]
-        static class DetectExtensions
-        {
-            static void Postfix(StandardLevelDetailView __instance)
-            {
-                if (__instance.beatmapKey != null && __instance._beatmapLevel != null)
-                {
-                    var hasRequirement = SongCore.Collections.RetrieveDifficultyData(__instance._beatmapLevel, __instance.beatmapKey)?
-                    .additionalDifficultyData?
-                    ._requirements?.Any(x => x == "Noodle Extensions" || x == "Mapping Extensions") == true;
-                    if (hasRequirement) Config.Instance.Enabled = false;
-                    else Config.Instance.Enabled = true;
-                }
-            }
-        }
-
         [HarmonyPatch(typeof(ObstacleController), nameof(ObstacleController.Init))]
         static class HideObstacle
         {
@@ -53,10 +37,28 @@ namespace ClearMind.HarmonyPatches
                         }
                         else if (Config.Instance.HideOutline)
                         {
-                            // The only issue with this logic is that the desktop view might see distant wall as transparent, while the rest are default.
+                            // The only issue with this logic is that the desktop view will see outer wall as transparent, while the rest are default.
                             VisibilityUtils.SetLayerRecursively(__instance._stretchableObstacle.transform.Find("HideWrapper"), VisibilityLayer.DesktopOnly);
                         }
                     }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(GameplayCoreInstaller), nameof(GameplayCoreInstaller.InstallBindings))]
+        static class ArcIntensity
+        {
+            static void Postfix(ref GameplayCoreInstaller __instance)
+            {
+                var key = (BeatmapKey)__instance._sceneSetupData?.beatmapKey;
+                var level = __instance._sceneSetupData?.beatmapLevel;
+                if (key != null && level != null)
+                {
+                    var hasRequirement = SongCore.Collections.RetrieveDifficultyData(level, key)?
+                    .additionalDifficultyData?
+                    ._requirements?.Any(x => x == "Noodle Extensions" || x == "Mapping Extensions") == true;
+                    if (hasRequirement) Config.Instance.Enabled = false;
+                    else Config.Instance.Enabled = true;
                 }
             }
         }

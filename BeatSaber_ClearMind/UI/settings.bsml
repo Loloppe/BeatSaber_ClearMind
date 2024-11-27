@@ -1,6 +1,9 @@
 <settings-container>
-	<checkbox-setting apply-on-change="true" value="OuterTransparent" text="Make non-gameplay wall transparent" align='Right'/>
-	<checkbox-setting apply-on-change="true" value="ForceTransparent" text="Make all wall transparent" align='Right'/>
-	<checkbox-setting apply-on-change="true" value="HideOutline" text="Hide non-gameplay wall outline in HMD only" align='Right'/>
-	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Hide non-gameplay wall outline in HMD and Desktop View" align='Right'/>
+	<horizontal>
+		<text text='Wall' align='Center'/>
+	</horizontal>
+	<checkbox-setting apply-on-change="true" value="OutsideTransparent" text="Make non-gameplay wall transparent" align='Left'/>
+	<checkbox-setting apply-on-change="true" value="ForceTransparent" text="Make all wall transparent" align='Left'/>
+	<checkbox-setting apply-on-change="true" value="HideOutline" text="Hide non-gameplay wall outline in HMD only" align='Left'/>
+	<checkbox-setting apply-on-change="true" value="HideDesktopView" text="Hide non-gameplay wall outline in HMD and Desktop View" align='Left'/>
 </settings-container>
