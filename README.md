@@ -1,4 +1,9 @@
 # BeatSaber_ClearMind
 
-Simple Beat Saber plugin to hide V3 walls outside of the player expected space.
-Option to also hide on desktop view.
+Allow the player to hide non-gameplay V3 walls or to make walls transparent.  
+
+Options:
+- Make non-gameplay wall transparent
+- Make all wall transparent
+- Hide non-gameplay wall outline in HMD only
+- Hide non-gameplay wall outline in HMD and Desktop View
