@@ -54,7 +54,7 @@ namespace ClearMind.HarmonyPatches
                 var level = __instance._sceneSetupData?.beatmapLevel;
                 if (key != null && level != null)
                 {
-                    var hasRequirement = SongCore.Collections.RetrieveDifficultyData(level, key)?
+                    var hasRequirement = SongCore.Collections.GetCustomLevelSongDifficultyData(key)?
                     .additionalDifficultyData?
                     ._requirements?.Any(x => x == "Noodle Extensions" || x == "Mapping Extensions") == true;
                     if (hasRequirement) Config.Instance.Enabled = false;

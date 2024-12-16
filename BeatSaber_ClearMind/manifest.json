@@ -3,9 +3,9 @@
   "id": "ClearMind",
   "name": "ClearMind",
   "author": "Loloppe",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Hide non-interactive V3 walls",
-  "gameVersion": "1.39.1",
+  "gameVersion": "1.40.0",
   "dependsOn": {
     "BSIPA": "^4.3.0",
     "BeatSaberMarkupLanguage": "^1.12.0",
