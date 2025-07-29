@@ -1,5 +1,4 @@
-﻿
-using CameraUtils.Core;
+﻿using CameraUtils.Core;
 using HarmonyLib;
 using System.Linq;
 using UnityEngine;
@@ -16,11 +15,24 @@ namespace ClearMind.HarmonyPatches
                 if (Config.Instance.Enabled)
                 {
                     // This game seems to reuse object during gameplay, so need to set back parameters just in case.
-                    var hw = __instance._stretchableObstacle.transform.Find("HideWrapper");
-                    VisibilityUtils.SetLayerRecursively(hw, VisibilityLayer.Obstacle);
-                    var renderer = __instance._stretchableObstacle.transform.Find("ObstacleCore").GetComponent<MeshRenderer>();
-                    if (renderer != null)
+                    GameObject hideWrapper = null;
+                    MeshRenderer renderer = null;
+                    foreach (var wrapper in __instance._visualWrappers)
                     {
+                        if (wrapper.name == "HideWrapper")
+                        {
+                            hideWrapper = wrapper;
+                        }
+
+                        if (wrapper.name == "ObstacleCore")
+                        {
+                            renderer = wrapper.GetComponent<MeshRenderer>();
+                        }
+                    }
+
+                    if (renderer != null && hideWrapper != null)
+                    {
+                        VisibilityUtils.SetLayerRecursively(hideWrapper, VisibilityLayer.Obstacle);
                         renderer.forceRenderingOff = false;
 
                         // Option to make all walls transparent
@@ -36,12 +48,12 @@ namespace ClearMind.HarmonyPatches
                             // This part hide the outline of the wall
                             if (Config.Instance.HideDesktopView)
                             {
-                                VisibilityUtils.SetLayerRecursively(hw, VisibilityLayer.Event);
+                                VisibilityUtils.SetLayerRecursively(hideWrapper, VisibilityLayer.Event);
                             }
                             else if (Config.Instance.HideOutline)
                             {
                                 // The only issue with this logic is that the desktop view will see outer wall as transparent, while the rest are default.
-                                VisibilityUtils.SetLayerRecursively(hw, VisibilityLayer.DesktopOnly);
+                                VisibilityUtils.SetLayerRecursively(hideWrapper, VisibilityLayer.DesktopOnly);
                             }
                         }
                     }
